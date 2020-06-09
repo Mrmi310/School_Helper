@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">School Helper</string>
+    <string name="gradesText">GRADES</string>
+    <string name="homeworkText">HOMEWORK AND TESTS DUE</string>
+    <string name="addSubjectText">ADD SUBJECT</string>
+    <string name="cancelButton">CANCEL</string>
+    <string name="addButton">ADD</string>
+</resources>

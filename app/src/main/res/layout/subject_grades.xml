@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="400sp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/colorPrimaryDark"
+    android:padding="20sp">
+
+    <TextView
+
+        android:id="@+id/subjectName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SUBJECT NAME"
+        android:textSize="34sp" />
+
+    <TextView
+        android:id="@+id/gradeList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GRADES, 1, 1, 2, 3, 4,, 5,1 5,13,5 ,13 5,13, 513, 5,13, 513,5 ,1"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/subjectAverageGrade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="AVERAGE GRADE: 5.00"
+        android:textSize="28sp" />
+</LinearLayout>

@@ -1,10 +1,7 @@
 package com.mrmi.schoolhelper;
 
-import android.view.View;
 import com.google.gson.annotations.SerializedName;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class CustomSubject
 {
@@ -15,10 +12,10 @@ public class CustomSubject
     public int averageGrade;
 
     @SerializedName("Grades")
-    public ArrayList<Integer> gradeList;
+    public ArrayList<Short> gradeList;
 
     //Constructor
-    public CustomSubject(String name, int average, ArrayList<Integer> grades)
+    public CustomSubject(String name, int average, ArrayList<Short> grades)
     {
         subjectName=name;
         averageGrade=average;

@@ -17,13 +17,26 @@
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20sp"
+        android:layout_marginBottom="20sp"
 
         android:text="AVERAGE GRADE: "
         android:textSize="30sp" />
 
+    <Button
+        android:id="@+id/addSubjectButton"
+
+        android:layout_width="200sp"
+        android:layout_height="80sp"
+
+        android:text="@string/addSubjectText"
+        android:textSize="26sp"
+
+        android:onClick="addSubject"/>
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="500sp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20sp"
         android:layout_marginBottom="20sp">
 
@@ -34,17 +47,6 @@
             android:layout_width="match_parent">
 
         </LinearLayout>
-
     </ScrollView>
 
-    <Button
-        android:id="@+id/button"
-
-        android:layout_width="200sp"
-        android:layout_height="80sp"
-
-        android:text="@string/addSubjectText"
-        android:textSize="26sp"
-
-        android:onClick="addSubject"/>
 </LinearLayout>

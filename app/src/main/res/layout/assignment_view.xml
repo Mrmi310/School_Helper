@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="400sp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/colorPrimaryDark"
+    android:padding="10sp">
+
+    <TextView
+
+        android:id="@+id/assignmentNameText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ASSIGNMENT NAME"
+        android:textSize="28sp" />
+
+    <TextView
+        android:id="@+id/dateDueText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="DATE DUE"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/remainingTimeText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="REMAINING TIME"
+        android:textSize="22sp" />
+
+    <Button
+        android:id="@+id/deleteAssignmentButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:onClick="deleteAssignment"
+        android:text="DELETE ASSIGNMENT"
+        android:textSize="20sp" />
+
+</LinearLayout>

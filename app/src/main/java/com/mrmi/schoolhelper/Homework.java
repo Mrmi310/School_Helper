@@ -1,7 +1,10 @@
 package com.mrmi.schoolhelper;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,14 +22,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class Homework extends AppCompatActivity
 {
     Dialog popupDialog; //Used for adding a new assignment to the scrollview
     ArrayList<CustomAssignment> assignmentList; //Used for storing assignment views in user preferences
-    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -38,6 +39,13 @@ public class Homework extends AppCompatActivity
         popupDialog = new Dialog(this);
 
         loadAssignments();
+        displayAssignments();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
         displayAssignments();
     }
 
@@ -61,6 +69,7 @@ public class Homework extends AppCompatActivity
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth)
             {
+                dds[0]="";
                 ++month; //Increase the month value by 1 because the months begin from 0 in CalendarViews
                 System.out.println("[MRMI]: CHANGED DATE");
                 //Create the dayDueString: add zeroes if needed (if the month or day) ints are < 10 for more convenient splicing.
@@ -88,9 +97,12 @@ public class Homework extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                saveAssignment(newAssignmentNameText.getText().toString(), dds[0]);
-                displayAssignments();
-                popupDialog.dismiss();
+                if(dds[0]!="")
+                {
+                    saveAssignment(newAssignmentNameText.getText().toString(), dds[0]);
+                    displayAssignments();
+                    popupDialog.dismiss();
+                }
             }
         });
 
@@ -98,13 +110,21 @@ public class Homework extends AppCompatActivity
     }
 
     //Creates a CustomAssignment, adds it to the assignmentList and saves the list in shared preferences as a json string using Google's gson API
-    private void saveAssignment(String assignmentName, String dateDueString)
+    private void saveAssignment(String assignmentName, String dueDateString)
     {
         try
         {
-            System.out.print("[MRMI]: Adding assignment: " + assignmentName);
+            System.out.println("[MRMI]: Adding assignment: " + assignmentName);
+
             //Create CustomAssignment and add it to the assignmentList
-            assignmentList.add(new CustomAssignment(assignmentName, dateDueString));
+            CustomAssignment assignment = new CustomAssignment(assignmentName, dueDateString);
+            assignmentList.add(assignment);
+
+            //Schedule notification for newly added assignment
+            scheduleAssignmentNotification(assignment);
+
+
+            //Save the edited assignmentList
             Gson gson = new Gson();
             String json = gson.toJson(assignmentList);
             getSharedPreferences("shared preferences", MODE_PRIVATE).edit().putString("Assignment list", json).apply();
@@ -150,10 +170,10 @@ public class Homework extends AppCompatActivity
             LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View assignmentView = inflater.inflate(R.layout.assignment_view, null);
             //Text Views of the current assignment's view's layout
-            TextView assignmentNameTextView = assignmentView.findViewById(R.id.assignmentNameText), dateDueText = assignmentView.findViewById(R.id.dateDueText), remainingTimeText = assignmentView.findViewById(R.id.remainingTimeText);
+            TextView assignmentNameTextView = assignmentView.findViewById(R.id.assignmentNameText), dueDateText = assignmentView.findViewById(R.id.dueDateText), remainingTimeText = assignmentView.findViewById(R.id.remainingTimeText);
             assignmentNameTextView.setText(assignment.assignmentName); //Set the subject name
-            dateDueText.setText("DATE DUE: " + assignment.dateDueString); //Display grades from current CustomSubject's gradeList
-            remainingTimeText.setText("REMAINING TIME: " + assignment.calculateRemainingTime()); //Display time left until assignment's date due
+            dueDateText.setText("DATE DUE: " + assignment.dueDateString); //Display grades from current CustomSubject's gradeList
+            remainingTimeText.setText("REMAINING TIME: " + assignment.calculateRemainingTime() + " days."); //Display time left until assignment's date due
 
             //Button which deletes the current assignment
             Button deleteAssignmentButton = assignmentView.findViewById(R.id.deleteAssignmentButton);
@@ -172,7 +192,7 @@ public class Homework extends AppCompatActivity
     }
 
     //Deletes assignment from assignmentList and rewrites the list in user preferences
-    public void deleteAssignment(int targetAssignmentIndex)
+    private void deleteAssignment(int targetAssignmentIndex)
     {
         //Remove the customAssignment in assignmentList at index targetAssignmentIndex and save the assignmentList in shared preferences
         assignmentList.remove(targetAssignmentIndex);
@@ -182,5 +202,23 @@ public class Homework extends AppCompatActivity
 
         //Display the assignments again
         displayAssignments();
+    }
+
+    //Schedule assignment notification for 2 days before the assignment's due date
+    private void scheduleAssignmentNotification(CustomAssignment assignment)
+    {
+        System.out.println("[MRMI]: ENTERED SCHEDULE ASSIGNMENT");
+
+        Intent myIntent = new Intent(Homework.this, NotificationReceiver.class);
+        int uniqueID = (int) System.currentTimeMillis();
+        myIntent.putExtra("Assignment name", assignment.assignmentName);
+        //Launch AlarmNotificationReceiver using a pending intent with a unique ID to allow multiple notifications with one alarm manager
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(Homework.this, uniqueID, myIntent, 0);
+
+        //Schedule alarm to fire 2 days before the due date of the current assignment
+        System.out.println("[MRMI]: Scheduled notification for " + (assignment.calculateRemainingTime()-2) +" days.");
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+(assignment.calculateRemainingTime()-2)*86400000, pendingIntent);
+
     }
 }

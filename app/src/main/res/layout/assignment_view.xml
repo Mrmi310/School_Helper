@@ -16,7 +16,7 @@
         android:textSize="28sp" />
 
     <TextView
-        android:id="@+id/dateDueText"
+        android:id="@+id/dueDateText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="DATE DUE"
